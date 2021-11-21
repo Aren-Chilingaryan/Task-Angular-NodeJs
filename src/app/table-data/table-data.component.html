@@ -1,0 +1,29 @@
+<p-table [value]="accounts" responsiveLayout="scroll">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Created On</th>
+      <th>Owner</th>
+      <th>Action</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-table>
+    <tr>
+      <td>{{ table.id }}</td>
+      <td>{{ table.name }}</td>
+      <td>{{ table.creationDate }}</td>
+      <td>{{ table.owner }}</td>
+      <td>
+        <button
+          pButton
+          type="button"
+          class="p-button-text"
+          (click)="btnClick(table.id)"
+        >
+          {{ table.action }}
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
