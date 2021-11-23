@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TableProps } from './interfaces';
+import { Account } from './interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class TableService implements OnInit {
@@ -8,9 +8,9 @@ export class TableService implements OnInit {
 
   ngOnInit() {}
 
-  async getAccount(id: string): Promise<TableProps> {
-    const url = 'http://localhost:3000/api/accounts' + '/' + id;
-    const data = await this.http.get<TableProps>(url).toPromise();
+  async getAccount(id: string): Promise<Account> {
+    const url = 'http://localhost:3001/api/accounts' + '/' + id;
+    const data = await this.http.get<Account>(url).toPromise();
     return data;
   }
 }

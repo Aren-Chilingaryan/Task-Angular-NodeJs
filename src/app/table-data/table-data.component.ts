@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { TableProps } from '../interfaces';
+import { Account } from '../interfaces';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-table-data',
@@ -9,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./table-data.component.scss'],
 })
 export class TableDataComponent implements OnInit {
-  accounts: TableProps[] = [];
+  accounts: Account[] = [];
 
   constructor(private router: Router, private http: HttpClient) {}
 
@@ -19,9 +20,15 @@ export class TableDataComponent implements OnInit {
 
   ngOnInit() {
     this.http
-      .get<any>('http://localhost:3000/api/accounts')
+      .get<any>('http://localhost:3001/api/accounts')
       .subscribe((data) => {
         this.accounts = data;
+        this.accounts.forEach(
+          (item) =>
+            (item.creationDate = moment(item.creationDate)
+              .lang('en')
+              .format(' DD/MM/YYYY') as any)
+        );
       });
   }
 }

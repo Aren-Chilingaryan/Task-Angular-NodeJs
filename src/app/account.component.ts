@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TableService } from './table-service';
 import { ActivatedRoute } from '@angular/router';
-import { TableProps } from './interfaces';
+import { Account } from './interfaces';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-table',
@@ -35,7 +36,7 @@ import { TableProps } from './interfaces';
   ],
 })
 export class AccountComponent implements OnInit {
-  account: TableProps[] = [];
+  account: Account[] = [];
   constructor(
     private tableService: TableService,
     private route: ActivatedRoute
@@ -47,6 +48,12 @@ export class AccountComponent implements OnInit {
     this.tableService.getAccount(id).then((account) => {
       const newArray = [];
       newArray.push(account);
+      newArray.forEach(
+        (item) =>
+          (item.creationDate = moment(item.creationDate)
+            .lang('en')
+            .format(' DD/MM/YYYY') as any)
+      );
       this.account = newArray;
     });
   }
