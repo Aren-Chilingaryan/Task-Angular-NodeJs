@@ -12,6 +12,7 @@ connection.connect(function (err) {
     console.error("error connecting: " + err);
     return;
   }
+
   console.log("connected as id " + connection.threadId);
 });
 
@@ -20,7 +21,6 @@ module.exports = { getAccount, getSingleAccount };
 function getAccount() {
   return new Promise(function (resolve, reject) {
     var query_str = "SELECT * " + "FROM aren.account; ";
-
     connection.query(query_str, function (err, rows, fields) {
       if (err) {
         return reject(err);
@@ -30,23 +30,19 @@ function getAccount() {
   });
 }
 
-function getSingleAccount( id ) {
+function getSingleAccount(id) {
   return new Promise(function (resolve, reject) {
     var query_str =
-     "SELECT * " +
-     "FROM aren.account "+
-     "WHERE " +
-     "id = " + id;
-
+      "SELECT * " + "FROM aren.account " + "WHERE " + "id = " + id;
     connection.query(query_str, function (err, rows, fields) {
       if (err) {
         return reject(err);
-      } 
-      if(rows.length > 0){
-      resolve(rows[0]);
-    }else{
-      return null
-    }
+      }
+      if (rows.length > 0) {
+        resolve(rows[0]);
+      } else {
+        return null;
+      }
     });
   });
 }
