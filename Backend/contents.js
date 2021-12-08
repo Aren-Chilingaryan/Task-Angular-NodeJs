@@ -4,7 +4,6 @@ const app = express();
 const cors = require("cors");
 const accountsDb = require("./db/accounts");
 app.use(cors());
-let toBoolean = require("to-boolean");
 
 const accounts = [
   {
@@ -34,26 +33,44 @@ function giveSingleAccount(id) {
   const account = accounts.find((oneAccount) => oneAccount.id == id);
   return account;
 }
+// function findPassword(password) {
+//   const credential = credentials.find((credential) => credential.password == password);
+//   return account;
+// }
 
-app.get(process.env.getAccounts, async (req, res) => {
-  if (toBoolean(process.env.dataFromDb)) {
+app.get("/api/accounts", async (req, res) => {
+  if (process.env.IS_MOCK == true) {
+    res.send(accounts);
+    console.log("ari moment");
+  } else {
     const acc = await accountsDb.getAccount();
     res.send(acc);
-  } else {
-    res.send(accounts);
   }
 });
 
-app.get(process.env.getOneAccount, async (req, res) => {
-  if (toBoolean(process.env.dataFromDb)) {
+app.get("/api/accounts/:id", async (req, res) => {
+  if (process.env.IS_MOCK == true) {
+    res.send(giveSingleAccount(req.params.id));
+  } else {
     const singleAcc = await accountsDb.getSingleAccount(req.params.id);
     res.send(singleAcc);
-  } else {
-    res.send(giveSingleAccount(req.params.id));
   }
+});
+
+app.get("/api/credentials", async (req, res) => {
+  const credentials = await accountsDb.getCredentials();
+  res.send(credentials);
+});
+
+app.get("/api/credentials/:login/:password", async (req, res) => {
+  const correctCred = await accountsDb.getCorrectCredential(
+    req.params.login,
+    req.params.password
+  );
+  res.send(correctCred);
 });
 
 const port = process.env.PORT;
-app.listen(port, () =>
+app.listen(3001, () =>
   console.log(`Listening at http://localhost:${port}/ ...`)
 );

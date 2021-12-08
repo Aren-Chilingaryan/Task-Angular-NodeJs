@@ -4,3 +4,9 @@ export interface Account {
   creationDate: Date;
   owner: string;
 }
+
+export interface Credentials{
+  id: number;
+  login: string;
+  password: number;
+}

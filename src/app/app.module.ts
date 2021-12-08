@@ -8,9 +8,10 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
+import { SignInComponent } from './sign-in/sign-in.component';
 
 @NgModule({
-  declarations: [AppComponent, AccountComponent, TableDataComponent],
+  declarations: [AppComponent, AccountComponent, TableDataComponent, SignInComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -1,0 +1,27 @@
+<div class="sign-in">
+  <div class="container">
+    <label for="uname"><b>Username</b></label>
+    <form (submit)="(login)">
+      <input
+        type="text"
+        placeholder="Enter Username"
+        name="uname"
+        required
+        [(ngModel)]="loginText"
+      />
+    </form>
+
+    <label for="psw"><b>Password</b></label>
+    <form (submit)="(password)">
+      <input
+        type="password"
+        placeholder="Enter Password"
+        name="psw"
+        required
+        [(ngModel)]="passwordText"
+      />
+    </form>
+
+    <button type="submit" (click)="btnClick()">Login</button>
+  </div>
+</div>
