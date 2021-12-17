@@ -9,25 +9,39 @@ import { TableService } from '../table-service';
 })
 export class TableDataComponent implements OnInit {
   accounts: Account[] = [];
-  name:string = "";
-  creationDate:string = "";
-  ownerName:string = "";
-  showModal:boolean = false;
+  id: number = 0;
+  name: string = "";
+  creationDate: Date | null = null;
+  ownerName: string = "";
+  showModal: boolean = false;
 
   constructor(private router: Router, private tableService: TableService) {}
 
   btnClick(id: string) {
-    this.router.navigateByUrl('/accounts' + '/' + id);
-    
+    this.router.navigateByUrl('/accounts' + '/' + id); 
   }
 
-  addAccountButton() {
+  openModal() {
     this.showModal = true;
   }
 
-  ngOnInit() {
-    this.tableService.getAccounts().then((account) => {
+  addAccount() {
+    const account:Account = {
+      id: this.id,
+      name: this.name,
+      creationDate: this.creationDate,
+      owner: this.ownerName,
+    }
+    this.tableService.callServer(account);
+    this.showModal = false;
+    window.location.reload();
+  }
+
+  async ngOnInit() {
+    await this.tableService.getAccounts().then((account) => {
       this.accounts = account;
     });
+    this.id = this.accounts[this.accounts.length - 1].id + 1;
   }
 }
+

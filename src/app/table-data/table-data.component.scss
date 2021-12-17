@@ -8,13 +8,13 @@ input[type=text], input[type=password] {
     box-sizing: border-box;
   }
 
-  .addButton{
+  .addButton {
       width:200px;
       background-color: red;
       font-size: medium;
   }
 
-  .modal{
+  .modal {
       display: flex;
       flex-direction: column;
   }

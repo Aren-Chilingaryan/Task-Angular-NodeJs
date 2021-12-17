@@ -23,13 +23,13 @@
     </ng-template>
 </p-table>
 
-    <p-button label="Add account" (click)="addAccountButton()"></p-button>
+    <p-button label="Add account" (click)="openModal()"></p-button>
 
 <p-dialog header="Add account" [(visible)]="showModal">
     <div class="modal">
-        <input type="text" placeholder="Enter Name" name="uname"  [(ngModel)]="name" />
-        <input type="text" placeholder="Enter Creation Date" name="date"  [(ngModel)]="creationDate" />
-        <input type="text" placeholder="Enter Owner Name " name="owner"  [(ngModel)]="ownerName" />
+        <input type="text" placeholder="Enter Name" name="uname" [(ngModel)]="name"/>
+        <input type="text" placeholder="Enter Creation Date" name="date" [(ngModel)]="creationDate"/>
+        <input type="text" placeholder="Enter Owner Name " name="owner" [(ngModel)]="ownerName"/>
     </div>
-    <p-button label="Add" ></p-button>
+    <p-button label="Add" (click)="addAccount()"></p-button>
 </p-dialog>

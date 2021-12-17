@@ -1,15 +1,13 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Account, Credentials } from './interfaces';
+import { Account } from './interfaces';
 import * as moment from 'moment';
 import { environment } from './../environments/environment';
 
 @Injectable({ providedIn: 'root' })
-export class TableService implements OnInit {
+export class TableService {
   accounts: Account[] = [];
   constructor(private http: HttpClient) {}
-
-  ngOnInit() {}
 
   async getAccount(id: string): Promise<Account> {
     const url = environment.apiUrl + '/' + id;
@@ -32,17 +30,11 @@ export class TableService implements OnInit {
     return data;
   }
 
-  async getCredentials(){
-    const url = environment.apiUrlCred;
-    const data = await this.http.get<Credentials[]>(url).toPromise();
-    return data;
+  callServer(user:Account) {
+    const url = environment.apiUrl;
+    this.http.post(url, user)
+    .subscribe(data => {
+      console.log(data);
+    });
   }
-
-  async getCorrectCredential(login:string, password:number){
-    const url = environment.apiUrlCred + '/' + login + '/' + password;
-    const data = await this.http.get<Credentials>(url).toPromise();
-    return data;
-  }
-
-
 }

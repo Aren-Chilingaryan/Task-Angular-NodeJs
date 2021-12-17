@@ -1,12 +1,6 @@
 export interface Account {
   id: number;
   name: string;
-  creationDate: Date;
+  creationDate: Date | null;
   owner: string;
-}
-
-export interface Credentials{
-  id: number;
-  login: string;
-  password: number;
 }
