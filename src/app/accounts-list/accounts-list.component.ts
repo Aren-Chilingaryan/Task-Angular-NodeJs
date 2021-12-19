@@ -7,7 +7,6 @@ import { TableService } from '../table-service';
   templateUrl: './accounts-list.component.html',
   styleUrls: ['./accounts-list.component.scss'],
 })
-
 export class AccountsListComponent implements OnInit {
   accounts: Account[] = [];
   showModal: boolean = false;
@@ -15,32 +14,36 @@ export class AccountsListComponent implements OnInit {
   constructor(private router: Router, private tableService: TableService) {}
 
   btnClick(id: string) {
-    this.router.navigateByUrl(`/accounts/${id}`); 
+    this.router.navigateByUrl(`/accounts/${id}`);
   }
 
   openModal() {
     this.showModal = true;
   }
 
-  addAccount(name:string, creationDate:Date | string, ownerName:string) {
+  async addAccount(
+    name: string,
+    creationDate: Date | string,
+    ownerName: string
+  ) {
     const account = {
-      name:name,
+      name: name,
       creationDate: creationDate,
       owner: ownerName,
-    }
-    this.tableService.addAccount(account);
+    };
+    await this.tableService.addAccount(account);
     this.showModal = false;
     window.location.reload();
   }
 
-  deleteAccount(id:string) {
-    this.tableService.deleteAccount(id);
+  async deleteAccount(id: string) {
+    await this.tableService.deleteAccount(id);
     window.location.reload();
   }
 
   ngOnInit() {
     this.tableService.getAccounts().then((account) => {
-    this.accounts = account;
+      this.accounts = account;
     });
   }
 }

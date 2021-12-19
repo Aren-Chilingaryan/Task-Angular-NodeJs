@@ -28,7 +28,6 @@ import { Account } from './interfaces';
   `,
   styles: [``],
 })
-
 export class AccountComponent implements OnInit {
   account: Account[] = [];
   constructor(

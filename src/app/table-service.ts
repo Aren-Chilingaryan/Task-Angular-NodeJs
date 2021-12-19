@@ -5,14 +5,12 @@ import * as moment from 'moment';
 import { environment } from './../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class TableService {
-  url = environment.apiUrl;
+  private url: string = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
-  formatDate(date:Date | null) {
-    const formattedDate =  moment(date)
-      .lang('en')
-      .format(' DD/MM/YYYY') as any;
+  formatDate(date: Date | null) {
+    const formattedDate = moment(date).lang('en').format('DD/MM/YYYY') as any;
     return formattedDate;
   }
 
@@ -26,19 +24,18 @@ export class TableService {
   async getAccounts() {
     const data = await this.http.get<Account[]>(this.url).toPromise();
     data.forEach(
-      (item) =>
-        (item.creationDate = this.formatDate(item.creationDate))
+      (item) => (item.creationDate = this.formatDate(item.creationDate))
     );
     return data;
   }
 
-  addAccount(account:any) {
-    this.http.post(this.url, account)
-    .subscribe();
+  async addAccount(account: any) {
+    const data = await this.http.post(this.url, account).toPromise();
+    return data;
   }
 
-  deleteAccount(id:string) {
-    return this.http.delete(`${this.url}/delete/${id}`)
-     .subscribe();
+  deleteAccount(id: string) {
+    const data = this.http.delete(`${this.url}/delete/${id}`).toPromise();
+    return data;
   }
 }

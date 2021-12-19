@@ -9,11 +9,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { SignInComponent } from './sign-in/sign-in.component';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";    
-import {DialogModule} from 'primeng/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
-  declarations: [AppComponent, AccountComponent, AccountsListComponent, SignInComponent],
+  declarations: [
+    AppComponent,
+    AccountComponent,
+    AccountsListComponent,
+    SignInComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -22,7 +27,7 @@ import {DialogModule} from 'primeng/dialog';
     HttpClientModule,
     ButtonModule,
     DialogModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
