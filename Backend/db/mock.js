@@ -18,12 +18,12 @@ const accounts = [{
         owner: "argam",
     },
 ];
-
+ 
 function getSingleAccount(id) {
     const account = accounts.find((oneAccount) => oneAccount.id == id);
     return new Promise((resolve, reject) => {
-        if (err) {
-            resolve(err);
+        if (account) {
+            resolve(account);
         }else{
            reject("No account");
         }
@@ -44,9 +44,14 @@ function addAccount(id, name, date, owner) {
     accounts.push({id, name, date, owner });
 }
 
+function deleteAccount(id) {
+    accounts.filter(account => accounts.id = id);
+}
+
 module.exports = {
     getSingleAccount,
     getAccount,
-    addAccount
+    addAccount,
+    deleteAccount
 };
 

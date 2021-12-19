@@ -21,7 +21,8 @@ module.exports = {
     getSingleAccount,
     getCredentials,
     getCorrectCredential,
-    addAccount
+    addAccount,
+    deleteAccount
 };
 
 function getAccount() {
@@ -94,6 +95,12 @@ function addAccount(name, date, owner) {
     const query_str = `INSERT INTO aren.accounts (name, creationDate, owner) VALUES ("${name}", "${date}", "${owner}")`;
     connection.query(query_str, (err, result) => {
         if (err) throw err;
-        console.log("1 record inserted");
+    });
+}
+
+function deleteAccount(id) {
+    const query_str = `DELETE FROM aren.accounts WHERE id = ${id};`;
+    connection.query(query_str, (err, result) => {
+        if (err) throw err;
     });
 }

@@ -18,3 +18,7 @@ input[type=text], input[type=password] {
       display: flex;
       flex-direction: column;
   }
+
+  .delete {
+      color: red;
+  }

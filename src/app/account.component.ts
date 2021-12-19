@@ -26,13 +26,9 @@ import { Account } from './interfaces';
       </ng-template>
     </p-table>
   `,
-  styles: [
-    `
-      .panel {
-      }
-    `,
-  ],
+  styles: [``],
 })
+
 export class AccountComponent implements OnInit {
   account: Account[] = [];
   constructor(

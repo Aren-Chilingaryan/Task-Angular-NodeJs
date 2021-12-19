@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Account } from '../interfaces';
 import { Router } from '@angular/router';
 import { TableService } from '../table-service';
-
 @Component({
   selector: 'app-accounts-list',
   templateUrl: './accounts-list.component.html',
@@ -34,9 +33,14 @@ export class AccountsListComponent implements OnInit {
     window.location.reload();
   }
 
-   ngOnInit() {
-     this.tableService.getAccounts().then((account) => {
-      this.accounts = account;
+  deleteAccount(id:string) {
+    this.tableService.deleteAccount(id);
+    window.location.reload();
+  }
+
+  ngOnInit() {
+    this.tableService.getAccounts().then((account) => {
+    this.accounts = account;
     });
   }
 }

@@ -6,24 +6,15 @@ const bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors());
 app.use(bodyParser.json());
-let filePath = "./db/accounts";
-
-if(process.env.IS_MOCK == "true") {
-    filePath = "./db/mock";
-} else{
-    filePath = "./db/accounts";
-}
-
-const accountsDb = require(filePath);
-
+const accountsDb = require("./db/database");
+  
 app.get("/api/accounts", async (req, res) => {
-    const acc = await accountsDb.getAccount();
+    const acc = await accountsDb.accounts.getAccount();
     res.send(acc);
-    console.log(res);
 });
 
 app.get("/api/accounts/:id", async (req, res) => {
-    const singleAcc = await accountsDb.getSingleAccount(req.params.id);
+    const singleAcc = await accountsDb.accounts.getSingleAccount(req.params.id);
     res.send(singleAcc);
 });
 
@@ -33,10 +24,16 @@ app.post("/api/accounts", urlencodedParser, (req, res) => {
         date: req.body.creationDate,
         owner: req.body.owner
     }
-    accountsDb.addAccount(body.name, body.date, body.owner);
+    accountsDb.accounts.addAccount(body.name, body.date, body.owner);
 });
 
-const port = process.env.PORT;
+app.delete("/api/accounts/delete/:id", urlencodedParser, (req, res) => {
+    const id = req.params.id 
+    accountsDb.accounts.deleteAccount(id);
+    res.redirect('/api/accounts');
+});
+
+const port = process.env.PORT || 3000;
 app.listen(port, () =>
     console.log(`Listening at http://localhost:${port}/ ...`)
 );
