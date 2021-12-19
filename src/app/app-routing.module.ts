@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AccountComponent } from './account.component';
-import { TableDataComponent } from './table-data/table-data.component';
+import { AccountsListComponent } from './accounts-list/accounts-list.component';
 
 const routes: Routes = [
   {
     path: 'accounts',
-    component: TableDataComponent,
+    component: AccountsListComponent,
     pathMatch: 'full',
   },
 
@@ -17,7 +17,7 @@ const routes: Routes = [
 
   {
     path: '**',
-    component: TableDataComponent,
+    component: AccountsListComponent,
   },
 ];
 

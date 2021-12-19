@@ -6,11 +6,12 @@ import { environment } from './../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TableService {
-  accounts: Account[] = [];
+  url = environment.apiUrl;
+
   constructor(private http: HttpClient) {}
 
   async getAccount(id: string): Promise<Account> {
-    const url = environment.apiUrl + '/' + id;
+    const url = this.url + '/' + id;
     const data = await this.http.get<Account>(url).toPromise();
     data.creationDate = moment(data.creationDate)
       .lang('en')
@@ -19,8 +20,7 @@ export class TableService {
   }
 
   async getAccounts() {
-    const url = environment.apiUrl;
-    const data = await this.http.get<Account[]>(url).toPromise();
+    const data = await this.http.get<Account[]>(this.url).toPromise();
     data.forEach(
       (item) =>
         (item.creationDate = moment(item.creationDate)
@@ -30,9 +30,8 @@ export class TableService {
     return data;
   }
 
-  callServer(user:Account) {
-    const url = environment.apiUrl;
-    this.http.post(url, user)
+  addAccount(account:any) {
+    this.http.post(this.url, account)
     .subscribe(data => {
       console.log(data);
     });

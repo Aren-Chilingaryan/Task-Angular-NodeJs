@@ -27,9 +27,9 @@
 
 <p-dialog header="Add account" [(visible)]="showModal">
     <div class="modal">
-        <input type="text" placeholder="Enter Name" name="uname" [(ngModel)]="name"/>
-        <input type="text" placeholder="Enter Creation Date" name="date" [(ngModel)]="creationDate"/>
-        <input type="text" placeholder="Enter Owner Name " name="owner" [(ngModel)]="ownerName"/>
+        <input type="text" placeholder="Enter Name" name="uname" #username />
+        <input type="text" placeholder="Enter Creation Date" name="date" #creationDate />
+        <input type="text" placeholder="Enter Owner Name " name="owner" #ownerName/>
     </div>
-    <p-button label="Add" (click)="addAccount()"></p-button>
+    <p-button label="Add" (click)="addAccount(username.value, creationDate.value, ownerName.value)"></p-button>
 </p-dialog>

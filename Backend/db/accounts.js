@@ -1,15 +1,14 @@
 const mysql = require("mysql");
-const bodyParser = require('body-parser');
 
 const connection = mysql.createConnection({
-    host: "localhost",
-    port: 3306,
-    user: "root",
-    password: "Solicy$55Solicy$55",
-    database: "aren",
+    host: process.env.HOST,
+    port: process.env.MYSQLPORT,
+    user: process.env.MYSQLUSER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE,
 });
 
-connection.connect(function(err) {
+connection.connect((err) => { 
     if (err) {
         console.error("error connecting: " + err);
         return;
@@ -26,9 +25,9 @@ module.exports = {
 };
 
 function getAccount() {
-    return new Promise(function(resolve, reject) {
-        var query_str = "SELECT * " + "FROM aren.accounts; ";
-        connection.query(query_str, function(err, rows, fields) {
+    return new Promise((resolve, reject) => {
+        const query_str = "SELECT * " + "FROM aren.accounts; ";
+        connection.query(query_str, (err, rows) => {
             if (err) {
                 return reject(err);
             }
@@ -38,10 +37,9 @@ function getAccount() {
 }
 
 function getSingleAccount(id) {
-    return new Promise(function(resolve, reject) {
-        var query_str =
-            "SELECT * " + "FROM aren.accounts " + "WHERE " + "id = " + id;
-        connection.query(query_str, function(err, rows, fields) {
+    return new Promise((resolve, reject) => {
+        const query_str = "SELECT * " + "FROM aren.accounts " + "WHERE " + "id = " + id;   
+        connection.query(query_str, (err, rows) => {
             if (err) {
                 return reject(err);
             }
@@ -55,9 +53,9 @@ function getSingleAccount(id) {
 }
 
 function getCredentials() {
-    return new Promise(function(resolve, reject) {
-        var query_str = "SELECT * " + "FROM aren.credentials;";
-        connection.query(query_str, function(err, rows, fields) {
+    return new Promise((resolve, reject) => {
+        const query_str = "SELECT * " + "FROM aren.credentials;";
+        connection.query(query_str, (err, rows) => {
             if (err) {
                 return reject(err);
             }
@@ -67,8 +65,8 @@ function getCredentials() {
 }
 
 function getCorrectCredential(login, password) {
-    return new Promise(function(resolve, reject) {
-        var query_str =
+    return new Promise((resolve, reject) => {
+        const query_str =
             "SELECT * " +
             "FROM aren.credentials" +
             " WHERE " +
@@ -79,7 +77,7 @@ function getCorrectCredential(login, password) {
             "'" +
             login +
             "'";
-        connection.query(query_str, function(err, rows, fields) {
+        connection.query(query_str, (err, rows) => {
             if (err) {
                 return reject(err);
             }
@@ -92,7 +90,10 @@ function getCorrectCredential(login, password) {
     });
 }
 
-function addAccount(id, name, date, owner) {
-    var query_str = `INSERT INTO aren.accounts (id, name, creationDate, owner) VALUES ("${id}", "${name}", "${date}", "${owner}")`;
-    connection.query(query_str);
+function addAccount(name, date, owner) {
+    const query_str = `INSERT INTO aren.accounts (name, creationDate, owner) VALUES ("${name}", "${date}", "${owner}")`;
+    connection.query(query_str, (err, result) => {
+        if (err) throw err;
+        console.log("1 record inserted");
+    });
 }
