@@ -15,7 +15,7 @@ export class TableService {
   }
 
   async getAccount(id: string): Promise<Account> {
-    const url = this.url + '/' + id;
+    const url = `${this.url}/${id}`;
     const data = await this.http.get<Account>(url).toPromise();
     data.creationDate = this.formatDate(data.creationDate);
     return data;

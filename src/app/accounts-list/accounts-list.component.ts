@@ -31,14 +31,14 @@ export class AccountsListComponent implements OnInit {
       creationDate: creationDate,
       owner: ownerName,
     };
-    await this.tableService.addAccount(account);
     this.showModal = false;
     window.location.reload();
+    await this.tableService.addAccount(account);
   }
 
   async deleteAccount(id: string) {
-    await this.tableService.deleteAccount(id);
     window.location.reload();
+    await this.tableService.deleteAccount(id);
   }
 
   ngOnInit() {

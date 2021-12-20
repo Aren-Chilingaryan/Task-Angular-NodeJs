@@ -1,7 +1,7 @@
-const accounts = require("./mock.json");
+let accounts = require("./mock.json");
 
 function getAccount(id) {
-  const account = accounts.find((oneAccount) => oneAccount.id == id);
+  let account = accounts.find((oneAccount) => oneAccount.id == id);
   return new Promise((resolve, reject) => {
     if (account) {
       resolve(account);
@@ -21,12 +21,33 @@ function getAllAccounts() {
   });
 }
 
-function addAccount(id, name, date, owner) {
-  accounts.push({ id, name, date, owner });
+function addAccount(object) {
+  return new Promise((resolve, reject) => {
+    const id = Number(accounts[accounts.length - 1].id) + 1;
+    const account = {
+      id: id,
+      name: object.name,
+      date: object.creationDate,
+      owner: object.owner,
+    };
+    accounts.push(account);
+    if (account) {
+      resolve(account);
+    } else {
+      reject("No data");
+    }
+  });
 }
 
 function deleteAccount(id) {
-  accounts.filter((account) => account.id == id);
+  return new Promise((resolve, reject) => {
+    accounts = accounts.filter((account) => account.id != id);
+    if (accounts) {
+      resolve(accounts);
+    } else {
+      reject("No data");
+    }
+  });
 }
 
 module.exports = {

@@ -83,14 +83,17 @@ function getCorrectCredential(login, password) {
   });
 }
 
-function addAccount(name, date, owner) {
+function addAccount(body) {
   return new Promise((resolve, reject) => {
-    const query_str = `INSERT INTO aren.accounts (name, creationDate, owner) VALUES ("${name}", "${date}", "${owner}")`;
+    const query_str = `INSERT INTO aren.accounts (name, creationDate, owner) VALUES ("${body.name}", "${body.date}", "${body.owner}")`;
     connection.query(query_str, (err, result) => {
       if (err) {
         return reject(err);
+      }
+      if (result.length > 0) {
+        resolve(result[0]);
       } else {
-        resolve(result);
+        return null;
       }
     });
   });
@@ -102,8 +105,11 @@ function deleteAccount(id) {
     connection.query(query_str, (err, result) => {
       if (err) {
         return reject(err);
+      }
+      if (result.length > 0) {
+        resolve(result[0]);
       } else {
-        resolve(result);
+        return null;
       }
     });
   });

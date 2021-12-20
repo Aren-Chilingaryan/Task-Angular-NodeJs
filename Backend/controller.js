@@ -6,8 +6,8 @@ const bodyParser = require("body-parser");
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 app.use(cors());
 app.use(bodyParser.json());
-const Db = require("./db/database");
-const accountsDb = Db.accounts;
+const db = require("./db/database");
+const accountsDb = db.accounts;
 
 app.get("/api/accounts", async (req, res) => {
   const acc = await accountsDb.getAllAccounts();
@@ -25,11 +25,7 @@ app.post("/api/accounts", urlencodedParser, async (req, res) => {
     date: req.body.creationDate,
     owner: req.body.owner,
   };
-  const addedAccount = await accountsDb.addAccount(
-    body.name,
-    body.date,
-    body.owner
-  );
+  const addedAccount = await accountsDb.addAccount(body);
   res.send(addedAccount);
 });
 
