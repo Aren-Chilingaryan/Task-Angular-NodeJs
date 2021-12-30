@@ -1,0 +1,59 @@
+<div class="sign-up">
+  <div class="container">
+    <label for="uname"><b>Email</b></label>
+
+    <form>
+      <input
+        type="text"
+        placeholder="Enter Email"
+        name="email"
+        [(ngModel)]="user.email"
+      />
+    </form>
+
+    <label for="uname"><b>First Name</b></label>
+
+    <form>
+      <input
+        type="text"
+        placeholder="Enter FirstName"
+        name="fname"
+        [(ngModel)]="user.firstName"
+      />
+    </form>
+
+    <label for="lname"><b>Last Name</b></label>
+
+    <form>
+      <input
+        type="text"
+        placeholder="Enter LastName"
+        name="lname"
+        [(ngModel)]="user.lastName"
+      />
+    </form>
+
+    <label for="age"><b>Age</b></label>
+
+    <form>
+      <input
+        type="text"
+        placeholder="Enter Age"
+        name="age"
+        [(ngModel)]="user.age"
+      />
+    </form>
+
+    <label for="uname"><b>Password</b></label>
+
+    <form>
+      <input
+        type="Password"
+        placeholder="Enter Password"
+        name="psw"
+        [(ngModel)]="user.password"
+      />
+    </form>
+    <button type="submit" (click)="addUser(user)">Sign up</button>
+  </div>
+</div>

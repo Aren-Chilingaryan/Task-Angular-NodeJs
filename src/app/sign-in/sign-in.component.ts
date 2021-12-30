@@ -9,45 +9,21 @@ import { Credentials } from '../interfaces';
   styleUrls: ['./sign-in.component.scss'],
 })
 export class SignInComponent implements OnInit {
-  credentials: Credentials[] = [];
-  loginText: string = '';
-  passwordText: string = '';
-  wrongPasswordOrLogin: string = '';
-  iscorrect: boolean = true;
+  credentials: Credentials | any = {};
+  isValid: boolean = true;
 
   constructor(private router: Router, private tableService: TableService) {}
 
-  get login() {
-    return this.loginText;
-  }
-  get password() {
-    return Number(this.passwordText);
-  }
-
-  btnClick() {
-    if (
-      this.login == this.credentials[0].login &&
-      this.password == this.credentials[0].password
-    ) {
-      this.logIn();
-    }else {
-      console.log(this.login);
-      console.log(this.password);
+  async signIn(credentials: Credentials) {
+    const authorizedUser = await this.tableService.getAuthorizedUser(
+      credentials
+    );
+    if (authorizedUser) {
+      this.router.navigateByUrl('/accounts');
+    } else {
+      this.isValid = false;
     }
-
   }
 
-  logIn() {
-    this.router.navigateByUrl('/accounts');
-  }
-
-  async ngOnInit() {
-    await this.tableService
-      .getCorrectCredential(this.loginText, Number(this.passwordText))
-      .then((credential) => {
-        const newCredential = [];
-        newCredential.push(credential);
-        this.credentials = newCredential;
-      });
-  }
+  ngOnInit() {}
 }

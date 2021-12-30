@@ -1,27 +1,28 @@
 <div class="sign-in">
   <div class="container">
-    <label for="uname"><b>Username</b></label>
-    <form (submit)="(login)">
+    <label for="uname"><b>Email</b></label>
+    <form>
       <input
         type="text"
-        placeholder="Enter Username"
+        placeholder="Enter Email"
         name="uname"
         required
-        [(ngModel)]="loginText"
+        [(ngModel)]="credentials.email"
       />
     </form>
 
     <label for="psw"><b>Password</b></label>
-    <form (submit)="(password)">
+    <form>
       <input
         type="password"
         placeholder="Enter Password"
         name="psw"
         required
-        [(ngModel)]="passwordText"
+        [(ngModel)]="credentials.password"
       />
     </form>
 
-    <button type="submit" (click)="btnClick()">Login</button>
+    <button type="submit" (click)="signIn(credentials)">Sign in</button>
+    <div class="wrong" *ngIf="!isValid"><h1>Wrong email or password</h1></div>
   </div>
 </div>

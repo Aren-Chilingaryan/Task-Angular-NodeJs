@@ -1,12 +1,13 @@
-let accounts = require("./mock.json");
+const accounts = require("./mock-accounts.json");
+const users = require("./mock-users.json");
 
 function getAccount(id) {
-  let account = accounts.find((oneAccount) => oneAccount.id == id);
+  const account = accounts.find((oneAccount) => oneAccount.id == id);
   return new Promise((resolve, reject) => {
     if (account) {
       resolve(account);
     } else {
-      reject("No account");
+      reject(null);
     }
   });
 }
@@ -16,7 +17,7 @@ function getAllAccounts() {
     if (accounts) {
       resolve(accounts);
     } else {
-      reject("No data");
+      reject([]);
     }
   });
 }
@@ -34,7 +35,7 @@ function addAccount(object) {
     if (account) {
       resolve(account);
     } else {
-      reject("No data");
+      reject(null);
     }
   });
 }
@@ -43,10 +44,40 @@ function deleteAccount(id) {
   return new Promise((resolve, reject) => {
     accounts = accounts.filter((account) => account.id != id);
     if (accounts) {
-      resolve(accounts);
+      return resolve(accounts);
     } else {
-      reject("No data");
+      return reject([]);
     }
+  });
+}
+
+function addUser(body) {
+  return new Promise((resolve, reject) => {
+    const user = {
+      id: body.id,
+      email: body.email,
+      firstName: body.firstName,
+      lastName: body.lastName,
+      age: body.age,
+      password: body.password,
+    };
+    users = users.push(user);
+    if (user) {
+      return resolve(user);
+    }
+    return reject(null);
+  });
+}
+
+function getUser(email) {
+  return new Promise((resolve, reject) => {
+    const correctUser = users.find(
+      (user) => user.email == email
+    );
+    if (correctUser) {
+      return resolve(correctUser);
+    }
+    return reject(null);
   });
 }
 
@@ -55,4 +86,6 @@ module.exports = {
   getAllAccounts,
   addAccount,
   deleteAccount,
+  addUser,
+  getUser,
 };

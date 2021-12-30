@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogModule } from 'primeng/dialog';
+import { SignUpComponent } from './sign-up/sign-up.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { DialogModule } from 'primeng/dialog';
     AccountComponent,
     AccountsListComponent,
     SignInComponent,
+    SignUpComponent,
   ],
   imports: [
     BrowserModule,

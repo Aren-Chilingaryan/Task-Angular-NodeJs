@@ -45,39 +45,17 @@ function getAccount(id) {
   });
 }
 
-function getCredentials() {
+function getUser(email) {
   return new Promise((resolve, reject) => {
-    const query_str = "SELECT * " + "FROM aren.credentials;";
-    connection.query(query_str, (err, rows) => {
+    const query_str = `SELECT * FROM aren.users WHERE email='${email}';`;
+    connection.query(query_str, (err, result) => {
       if (err) {
         return reject(err);
       }
-      resolve(rows);
-    });
-  });
-}
-
-function getCorrectCredential(login, password) {
-  return new Promise((resolve, reject) => {
-    const query_str =
-      "SELECT * " +
-      "FROM aren.credentials" +
-      " WHERE " +
-      "password = " +
-      password +
-      " AND " +
-      "login = " +
-      "'" +
-      login +
-      "'";
-    connection.query(query_str, (err, rows) => {
-      if (err) {
-        return reject(err);
-      }
-      if (rows.length > 0) {
-        resolve(rows[0]);
+      if (result.length > 0) {
+        resolve(result[0]);
       } else {
-        return null;
+        return resolve(null);
       }
     });
   });
@@ -87,30 +65,36 @@ function addAccount(body) {
   return new Promise((resolve, reject) => {
     const query_str = `INSERT INTO aren.accounts (name, creationDate, owner) VALUES ("${body.name}", "${body.date}", "${body.owner}")`;
     connection.query(query_str, (err, result) => {
+      console.log(result.insertId);
       if (err) {
         return reject(err);
       }
-      if (result.length > 0) {
-        resolve(result[0]);
-      } else {
-        return null;
-      }
+      return resolve(getAccount(result.insertId));
     });
   });
 }
 
 function deleteAccount(id) {
+  const deletedAccount = getAccount(id);
   return new Promise((resolve, reject) => {
     const query_str = `DELETE FROM aren.accounts WHERE id = ${id};`;
     connection.query(query_str, (err, result) => {
       if (err) {
         return reject(err);
       }
-      if (result.length > 0) {
-        resolve(result[0]);
-      } else {
-        return null;
+      return resolve(deletedAccount);
+    });
+  });
+}
+
+function addUser(body) {
+  return new Promise((resolve, reject) => {
+    const query_str = `INSERT INTO aren.users (email, firstName, lastName, age, password) VALUES ("${body.email}", "${body.firstName}", "${body.lastName}", "${body.age}", "${body.password}")`;
+    connection.query(query_str, (err, result) => {
+      if (err) {
+        return reject(err);
       }
+      return resolve(result);
     });
   });
 }
@@ -118,8 +102,8 @@ function deleteAccount(id) {
 module.exports = {
   getAllAccounts,
   getAccount,
-  getCredentials,
-  getCorrectCredential,
+  getUser,
   addAccount,
   deleteAccount,
+  addUser,
 };

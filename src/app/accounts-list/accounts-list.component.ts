@@ -26,24 +26,35 @@ export class AccountsListComponent implements OnInit {
     creationDate: Date | string,
     ownerName: string
   ) {
+    let newAccounts = this.accounts.slice(0);
     const account = {
       name: name,
       creationDate: creationDate,
       owner: ownerName,
     };
     this.showModal = false;
-    window.location.reload();
-    await this.tableService.addAccount(account);
+    const newAccount = await this.tableService.addAccount(account);
+    newAccounts.push(newAccount);
+    this.accounts = newAccounts;
   }
 
   async deleteAccount(id: string) {
-    window.location.reload();
-    await this.tableService.deleteAccount(id);
+    let newAccounts = this.accounts.slice(0);
+    const deletedAccount = await this.tableService.deleteAccount(id);
+    newAccounts = this.tableService.deleteItemFromArray(
+      newAccounts,
+      deletedAccount
+    );
+    this.accounts = newAccounts;
   }
 
-  ngOnInit() {
+  getAllAccounts() {
     this.tableService.getAccounts().then((account) => {
       this.accounts = account;
     });
+  }
+
+  ngOnInit() {
+    this.getAllAccounts();
   }
 }
