@@ -11,6 +11,11 @@ const db = require("./db/database");
 const accountsDb = db.accounts;
 const router = express.Router();
 const utils = require("./db/utils.js");
+const jwt = require("jsonwebtoken");
+
+function generateAccessToken(username) {
+  return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+}
 
 router.get("/accounts", async (req, res) => {
   const accounts = await accountsDb.getAllAccounts();
@@ -43,8 +48,9 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
     age: age,
     password: hashedPassword,
   };
+  const token = generateAccessToken({ email: email });
   const addedUser = await accountsDb.addUser(user);
-  res.send(addedUser);
+  res.json(token);
 });
 
 router.post("/auth/signin", urlencodedParser, async (req, res) => {
