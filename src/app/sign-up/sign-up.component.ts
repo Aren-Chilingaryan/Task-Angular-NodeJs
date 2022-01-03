@@ -14,7 +14,7 @@ export class SignUpComponent implements OnInit {
   constructor(private tableService: TableService, private router: Router) {}
 
   async register(user: User) {
-    this.user = await this.tableService.addUser(user);
+    const newUser = await this.tableService.addUser(user);
     this.router.navigateByUrl(`/signin`);
   }
 

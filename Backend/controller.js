@@ -22,24 +22,24 @@ router.get("/accounts/:id", async (req, res) => {
 });
 
 router.post("/accounts", urlencodedParser, async (req, res) => {
-  const body = req.body;
+  const { name, creationDate, owner } = req.body;
   const account = {
-    name: body.name,
-    date: body.creationDate,
-    owner: body.owner,
+    name: name,
+    date: creationDate,
+    owner: owner,
   };
   const addedAccount = await accountsDb.addAccount(account);
   res.send(addedAccount);
 });
 
 router.post("/auth/signup", urlencodedParser, async (req, res) => {
-  const body = req.body;
-  const hashedPassword = await accountsDb.hashPassword(body.password);
+  const { email, firstName, lastName, age, password } = req.body;
+  const hashedPassword = await accountsDb.hashPassword(password);
   const user = {
-    email: body.email,
-    firstName: body.firstName,
-    lastName: body.lastName,
-    age: body.age,
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    age: age,
     password: hashedPassword,
   };
   const addedUser = await accountsDb.addUser(user);

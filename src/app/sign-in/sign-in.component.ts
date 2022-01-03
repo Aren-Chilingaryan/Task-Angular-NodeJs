@@ -15,9 +15,7 @@ export class SignInComponent implements OnInit {
   constructor(private router: Router, private tableService: TableService) {}
 
   async signIn(credentials: Credential) {
-    const authorizedUser = await this.tableService.getAuthorizedUser(
-      credentials
-    );
+    const authorizedUser = await this.tableService.signIn(credentials);
     if (authorizedUser) {
       this.router.navigateByUrl('/accounts');
     } else {

@@ -52,7 +52,7 @@ export class TableService {
     return data;
   }
 
-  async getAuthorizedUser(credentials: Credential) {
+  async signIn(credentials: Credential) {
     const url = this.apiurl + signinUrl;
     const data = await this.http.post<User>(url, credentials).toPromise();
     return data;
