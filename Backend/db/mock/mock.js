@@ -25,11 +25,12 @@ function getAllAccounts() {
 function addAccount(object) {
   return new Promise((resolve, reject) => {
     const id = Number(accounts[accounts.length - 1].id) + 1;
+    const { name, creationDate, owner } = object;
     const account = {
       id: id,
-      name: object.name,
-      date: object.creationDate,
-      owner: object.owner,
+      name: name,
+      date: creationDate,
+      owner: owner,
     };
     accounts.push(account);
     if (account) {
@@ -42,7 +43,7 @@ function addAccount(object) {
 
 function deleteAccount(id) {
   return new Promise((resolve, reject) => {
-    accounts = accounts.filter((account) => account.id != id);
+    accounts.filter((account) => account.id != id);
     if (accounts) {
       return resolve(accounts);
     } else {
@@ -53,15 +54,15 @@ function deleteAccount(id) {
 
 function addUser(body) {
   return new Promise((resolve, reject) => {
+    const { email, firstName, lastName, age, password } = body;
     const user = {
-      id: body.id,
-      email: body.email,
-      firstName: body.firstName,
-      lastName: body.lastName,
-      age: body.age,
-      password: body.password,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      age: age,
+      password: password,
     };
-    users = users.push(user);
+    users.push(user);
     if (user) {
       return resolve(user);
     }
@@ -71,9 +72,7 @@ function addUser(body) {
 
 function getUser(email) {
   return new Promise((resolve, reject) => {
-    const correctUser = users.find(
-      (user) => user.email == email
-    );
+    const correctUser = users.find((user) => user.email == email);
     if (correctUser) {
       return resolve(correctUser);
     }

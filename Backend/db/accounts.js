@@ -1,5 +1,4 @@
 const mysql = require("mysql");
-const bcrypt = require("bcrypt");
 
 const connection = mysql.createConnection({
   host: process.env.HOST,
@@ -99,12 +98,6 @@ function addUser(body) {
   });
 }
 
-async function hashPassword(password) {
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  return hashedPassword;
-}
-
 module.exports = {
   getAllAccounts,
   getAccount,
@@ -112,5 +105,4 @@ module.exports = {
   addAccount,
   deleteAccount,
   addUser,
-  hashPassword,
 };
