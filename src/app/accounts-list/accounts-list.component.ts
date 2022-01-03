@@ -21,12 +21,17 @@ export class AccountsListComponent implements OnInit {
     this.showModal = true;
   }
 
+  deleteItemFromArray(array: any, item: any) {
+    const index = array.indexOf(item);
+    array.splice(index, 1);
+  }
+
   async addAccount(
     name: string,
     creationDate: Date | string,
     ownerName: string
   ) {
-    let newAccounts = this.accounts.slice(0);
+    const newAccounts = [...this.accounts];
     const account = {
       name: name,
       creationDate: creationDate,
@@ -39,19 +44,14 @@ export class AccountsListComponent implements OnInit {
   }
 
   async deleteAccount(id: string) {
-    let newAccounts = this.accounts.slice(0);
+    const newAccounts = [...this.accounts];
     const deletedAccount = await this.tableService.deleteAccount(id);
-    newAccounts = this.tableService.deleteItemFromArray(
-      newAccounts,
-      deletedAccount
-    );
+    this.deleteItemFromArray(newAccounts, deletedAccount);
     this.accounts = newAccounts;
   }
 
-  getAllAccounts() {
-    this.tableService.getAccounts().then((account) => {
-      this.accounts = account;
-    });
+  async getAllAccounts() {
+    this.accounts = await this.tableService.getAccounts();
   }
 
   ngOnInit() {

@@ -1,4 +1,5 @@
 const mysql = require("mysql");
+const bcrypt = require("bcrypt");
 
 const connection = mysql.createConnection({
   host: process.env.HOST,
@@ -65,7 +66,6 @@ function addAccount(body) {
   return new Promise((resolve, reject) => {
     const query_str = `INSERT INTO aren.accounts (name, creationDate, owner) VALUES ("${body.name}", "${body.date}", "${body.owner}")`;
     connection.query(query_str, (err, result) => {
-      console.log(result.insertId);
       if (err) {
         return reject(err);
       }
@@ -99,6 +99,12 @@ function addUser(body) {
   });
 }
 
+async function hashPassword(password) {
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+}
+
 module.exports = {
   getAllAccounts,
   getAccount,
@@ -106,4 +112,5 @@ module.exports = {
   addAccount,
   deleteAccount,
   addUser,
+  hashPassword,
 };

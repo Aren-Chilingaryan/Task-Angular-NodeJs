@@ -1,33 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Account, User, Credentials } from './interfaces';
+import { Account, User, Credential } from './interfaces';
 import * as moment from 'moment';
 import { environment } from './../environments/environment';
+
+const signupUrl = '/auth/signup';
+const signinUrl = '/auth/signin';
+const accountsUrl = '/accounts';
 @Injectable({ providedIn: 'root' })
 export class TableService {
-  private AccountsUrl: string = environment.apiUrl;
-  private UserDataUrl: string = environment.apiUrlUser;
-
+  private apiurl: string = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-  formatDate(date: Date | null) {
-    if (date) {
-      const formattedDate = moment(date).lang('en').format('DD/MM/YYYY') as any;
-      return formattedDate;
-    } else {
-      return null;
-    }
+  formatDate(date: Date) {
+    const formattedDate = moment(date).lang('en').format('DD/MM/YYYY') as any;
+    return formattedDate;
   }
 
   async getAccount(id: string): Promise<Account> {
-    const url = `${this.AccountsUrl}/${id}`;
+    const url = accountsUrl + id;
     const data = await this.http.get<Account>(url).toPromise();
     data.creationDate = this.formatDate(data.creationDate);
     return data;
   }
 
   async getAccounts() {
-    const data = await this.http.get<Account[]>(this.AccountsUrl).toPromise();
+    const url = this.apiurl + accountsUrl;
+    const data = await this.http.get<Account[]>(url).toPromise();
     data.forEach(
       (item) => (item.creationDate = this.formatDate(item.creationDate))
     );
@@ -35,35 +34,27 @@ export class TableService {
   }
 
   async addAccount(account: any) {
-    const data = await this.http
-      .post<Account>(this.AccountsUrl, account)
-      .toPromise();
+    const url = this.apiurl + accountsUrl;
+    const data = await this.http.post<Account>(url, account).toPromise();
     data.creationDate = this.formatDate(account.creationDate);
     return data;
   }
 
   async addUser(user: User) {
-    const data = await this.http.post(this.UserDataUrl, user).toPromise();
+    const url = this.apiurl + signupUrl;
+    const data = await this.http.post(url, user).toPromise();
     return data;
   }
 
   async deleteAccount(id: string) {
-    const data = await this.http
-      .delete<Account>(`${this.AccountsUrl}/delete/${id}`)
-      .toPromise();
+    const url = `${this.apiurl + accountsUrl}/delete/${id}`;
+    const data = await this.http.delete<Account>(url).toPromise();
     return data;
   }
 
-  async getAuthorizedUser(credentials: Credentials) {
-    const url = `${this.UserDataUrl}/authorized`;
+  async getAuthorizedUser(credentials: Credential) {
+    const url = this.apiurl + signinUrl;
     const data = await this.http.post<User>(url, credentials).toPromise();
-    console.log(data);
     return data;
-  }
-
-  deleteItemFromArray(array: any, item: any) {
-    const index = array.indexOf(item);
-    array.splice(index, 1);
-    return array;
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TableService } from '../table-service';
-import { Credentials } from '../interfaces';
+import { Credential } from '../interfaces';
 
 @Component({
   selector: 'app-sign-in',
@@ -9,12 +9,12 @@ import { Credentials } from '../interfaces';
   styleUrls: ['./sign-in.component.scss'],
 })
 export class SignInComponent implements OnInit {
-  credentials: Credentials | any = {};
+  credentials: Credential | any = {};
   isValid: boolean = true;
 
   constructor(private router: Router, private tableService: TableService) {}
 
-  async signIn(credentials: Credentials) {
+  async signIn(credentials: Credential) {
     const authorizedUser = await this.tableService.getAuthorizedUser(
       credentials
     );
@@ -24,6 +24,5 @@ export class SignInComponent implements OnInit {
       this.isValid = false;
     }
   }
-
   ngOnInit() {}
 }

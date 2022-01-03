@@ -10,20 +10,13 @@ import { TableService } from '../table-service';
 })
 export class SignUpComponent implements OnInit {
   user: User | any = {};
-  usersList: User[] = [];
 
   constructor(private tableService: TableService, private router: Router) {}
 
-  addUser(user: User) {
-    const newAccounts = this.usersList.slice(0);
-    this.tableService.addUser(user).then((newAccount) => {
-      newAccounts.push(newAccount as User);
-      this.usersList = newAccounts;
-    });
+  async register(user: User) {
+    this.user = await this.tableService.addUser(user);
     this.router.navigateByUrl(`/signin`);
   }
 
-  ngOnInit() {
-    console.log(this.usersList);
-  }
+  ngOnInit() {}
 }
