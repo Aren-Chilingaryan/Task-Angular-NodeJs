@@ -1,4 +1,5 @@
 require("dotenv").config();
+const bcrypt = require("bcrypt");
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -8,33 +9,65 @@ app.use(cors());
 app.use(bodyParser.json());
 const db = require("./db/database");
 const accountsDb = db.accounts;
+const router = express.Router();
 
-app.get("/api/accounts", async (req, res) => {
-  const acc = await accountsDb.getAllAccounts();
-  res.send(acc);
+router.get("/accounts", async (req, res) => {
+  const accounts = await accountsDb.getAllAccounts();
+  res.send(accounts);
 });
 
-app.get("/api/accounts/:id", async (req, res) => {
-  const singleAcc = await accountsDb.getAccount(req.params.id);
-  res.send(singleAcc);
+router.get("/accounts/:id", async (req, res) => {
+  const account = await accountsDb.getAccount(req.params.id);
+  res.send(account);
 });
 
-app.post("/api/accounts", urlencodedParser, async (req, res) => {
-  const body = {
-    name: req.body.name,
-    date: req.body.creationDate,
-    owner: req.body.owner,
+router.post("/accounts", urlencodedParser, async (req, res) => {
+  const { name, creationDate, owner } = req.body;
+  const account = {
+    name: name,
+    date: creationDate,
+    owner: owner,
   };
-  const addedAccount = await accountsDb.addAccount(body);
+  const addedAccount = await accountsDb.addAccount(account);
   res.send(addedAccount);
 });
 
-app.delete("/api/accounts/delete/:id", urlencodedParser, async (req, res) => {
+router.post("/auth/signup", urlencodedParser, async (req, res) => {
+  const { email, firstName, lastName, age, password } = req.body;
+  const hashedPassword = await accountsDb.hashPassword(password);
+  const user = {
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    age: age,
+    password: hashedPassword,
+  };
+  const addedUser = await accountsDb.addUser(user);
+  res.send(addedUser);
+});
+
+router.post("/auth/signin", urlencodedParser, async (req, res) => {
+  const { email, password } = req.body;
+  const user = await accountsDb.getUser(email);
+  if (!user) {
+    res.status(401).json({ error: "User does not exist" });
+    return;
+  }
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    res.status(401).json({ error: "Password is invalid" });
+    return;
+  }
+  res.status(200).json(user);
+});
+
+router.delete("/accounts/delete/:id", urlencodedParser, async (req, res) => {
   const id = req.params.id;
   const deltedAccount = await accountsDb.deleteAccount(id);
   res.send(deltedAccount);
 });
 
+app.use("/api", router);
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
   console.log(`Listening at http://localhost:${port}/ ...`)

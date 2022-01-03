@@ -21,29 +21,40 @@ export class AccountsListComponent implements OnInit {
     this.showModal = true;
   }
 
+  deleteItemFromArray(array: any, item: any) {
+    const index = array.indexOf(item);
+    array.splice(index, 1);
+  }
+
   async addAccount(
     name: string,
     creationDate: Date | string,
     ownerName: string
   ) {
+    const newAccounts = [...this.accounts];
     const account = {
       name: name,
       creationDate: creationDate,
       owner: ownerName,
     };
     this.showModal = false;
-    window.location.reload();
-    await this.tableService.addAccount(account);
+    const newAccount = await this.tableService.addAccount(account);
+    newAccounts.push(newAccount);
+    this.accounts = newAccounts;
   }
 
   async deleteAccount(id: string) {
-    window.location.reload();
-    await this.tableService.deleteAccount(id);
+    const newAccounts = [...this.accounts];
+    const deletedAccount = await this.tableService.deleteAccount(id);
+    this.deleteItemFromArray(newAccounts, deletedAccount);
+    this.accounts = newAccounts;
+  }
+
+  async getAllAccounts() {
+    this.accounts = await this.tableService.getAccounts();
   }
 
   ngOnInit() {
-    this.tableService.getAccounts().then((account) => {
-      this.accounts = account;
-    });
+    this.getAllAccounts();
   }
 }
