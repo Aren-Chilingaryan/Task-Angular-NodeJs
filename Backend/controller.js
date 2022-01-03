@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 const db = require("./db/database");
 const accountsDb = db.accounts;
 const router = express.Router();
+const utils = require("./db/utils.js");
 
 router.get("/accounts", async (req, res) => {
   const accounts = await accountsDb.getAllAccounts();
@@ -34,7 +35,7 @@ router.post("/accounts", urlencodedParser, async (req, res) => {
 
 router.post("/auth/signup", urlencodedParser, async (req, res) => {
   const { email, firstName, lastName, age, password } = req.body;
-  const hashedPassword = await accountsDb.hashPassword(password);
+  const hashedPassword = await utils.hashPassword(password);
   const user = {
     email: email,
     firstName: firstName,

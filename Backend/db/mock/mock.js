@@ -1,6 +1,5 @@
 const accounts = require("./mock-accounts.json");
 const users = require("./mock-users.json");
-const bcrypt = require("bcrypt");
 
 function getAccount(id) {
   const account = accounts.find((oneAccount) => oneAccount.id == id);
@@ -26,11 +25,12 @@ function getAllAccounts() {
 function addAccount(object) {
   return new Promise((resolve, reject) => {
     const id = Number(accounts[accounts.length - 1].id) + 1;
+    const { name, creationDate, owner } = object;
     const account = {
       id: id,
-      name: object.name,
-      date: object.creationDate,
-      owner: object.owner,
+      name: name,
+      date: creationDate,
+      owner: owner,
     };
     accounts.push(account);
     if (account) {
@@ -54,12 +54,13 @@ function deleteAccount(id) {
 
 function addUser(body) {
   return new Promise((resolve, reject) => {
+    const { email, firstName, lastName, age, password } = body;
     const user = {
-      email: body.email,
-      firstName: body.firstName,
-      lastName: body.lastName,
-      age: body.age,
-      password: body.password,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      age: age,
+      password: password,
     };
     users.push(user);
     if (user) {
@@ -70,7 +71,6 @@ function addUser(body) {
 }
 
 function getUser(email) {
-  console.log(users);
   return new Promise((resolve, reject) => {
     const correctUser = users.find((user) => user.email == email);
     if (correctUser) {
@@ -80,12 +80,6 @@ function getUser(email) {
   });
 }
 
-async function hashPassword(password) {
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  return hashedPassword;
-}
-
 module.exports = {
   getAccount,
   getAllAccounts,
@@ -93,5 +87,4 @@ module.exports = {
   deleteAccount,
   addUser,
   getUser,
-  hashPassword,
 };
