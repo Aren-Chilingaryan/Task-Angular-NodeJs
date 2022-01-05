@@ -11,11 +11,7 @@ const db = require("./db/database");
 const accountsDb = db.accounts;
 const router = express.Router();
 const utils = require("./db/utils.js");
-const jwt = require("jsonwebtoken");
-
-function generateAccessToken(username) {
-  return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
-}
+const underscore = require("underscore");
 
 router.get("/accounts", async (req, res) => {
   const accounts = await accountsDb.getAllAccounts();
@@ -48,9 +44,42 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
     age: age,
     password: hashedPassword,
   };
-  const token = generateAccessToken({ email: email });
   const addedUser = await accountsDb.addUser(user);
-  res.json(token);
+  const token = await utils.generateAccessToken(
+    underscore.pick(addedUser, [
+      "id",
+      "email",
+      "firstName",
+      "lastName",
+      "age",
+      "password",
+    ]),
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN,
+    }
+  );
+  const refreshToken = await utils.generateAccessToken(
+    underscore.pick(addedUser, [
+      "id",
+      "email",
+      "firstName",
+      "lastName",
+      "age",
+      "password",
+    ]),
+    process.env.REFRESH_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN_REFRESH,
+    }
+  );
+  res.json({
+    access_token: token,
+    token_type: "Bearer",
+    expires_in: process.env.EXPIRES_IN,
+    refresh_token: refreshToken,
+    scope: "create",
+  });
 });
 
 router.post("/auth/signin", urlencodedParser, async (req, res) => {
