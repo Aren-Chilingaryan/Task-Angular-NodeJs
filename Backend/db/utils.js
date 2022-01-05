@@ -9,17 +9,15 @@ async function hashPassword(password) {
 }
 
 async function generateAccessToken(user, secret, options = {}) {
-  return new Promise((resolve, reject) => {
-    jwt.sign(user, secret, options, async (err, token) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(token);
-    });
-  });
+  return jwt.sign(user, secret, options);
+}
+
+async function decodeJwtToken(token, secret) {
+  return jwt.verify(token, secret);
 }
 
 module.exports = {
   hashPassword,
   generateAccessToken,
+  decodeJwtToken,
 };

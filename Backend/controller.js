@@ -45,29 +45,23 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
     password: hashedPassword,
   };
   const addedUser = await accountsDb.addUser(user);
+  const newUserObject = underscore.pick(user, [
+    "id",
+    "email",
+    "firstName",
+    "lastName",
+    "age",
+  ]);
   const token = await utils.generateAccessToken(
-    underscore.pick(addedUser, [
-      "id",
-      "email",
-      "firstName",
-      "lastName",
-      "age",
-      "password",
-    ]),
+    newUserObject,
     process.env.TOKEN_SECRET,
     {
       expiresIn: process.env.EXPIRES_IN,
     }
   );
+
   const refreshToken = await utils.generateAccessToken(
-    underscore.pick(addedUser, [
-      "id",
-      "email",
-      "firstName",
-      "lastName",
-      "age",
-      "password",
-    ]),
+    newUserObject,
     process.env.REFRESH_SECRET,
     {
       expiresIn: process.env.EXPIRES_IN_REFRESH,
@@ -75,6 +69,46 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
   );
   res.json({
     access_token: token,
+    token_type: "Bearer",
+    expires_in: process.env.EXPIRES_IN,
+    refresh_token: refreshToken,
+    scope: "create",
+  });
+});
+
+router.post("/refresh-jwt", urlencodedParser, async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(403).json({ error: "Access denied,token missing!" });
+  }
+  const decodedData = await utils.decodeJwtToken(
+    refreshToken,
+    process.env.REFRESH_SECRET
+  );
+  if (!decodedData) {
+    return res.status(401).json({ error: "Access denied,token is not valid!" });
+  }
+  const userEmail = decodedData.email;
+  const user = await accountsDb.getUser(userEmail);
+
+  const userObject = underscore.pick(user, [
+    "id",
+    "email",
+    "firstName",
+    "lastName",
+    "age",
+  ]);
+
+  const newToken = await utils.generateAccessToken(
+    userObject,
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN,
+    }
+  );
+
+  res.json({
+    access_token: newToken,
     token_type: "Bearer",
     expires_in: process.env.EXPIRES_IN,
     refresh_token: refreshToken,
