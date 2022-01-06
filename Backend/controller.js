@@ -11,6 +11,7 @@ const db = require("./db/database");
 const accountsDb = db.accounts;
 const router = express.Router();
 const utils = require("./db/utils.js");
+const underscore = require("underscore");
 
 router.get("/accounts", async (req, res) => {
   const accounts = await accountsDb.getAllAccounts();
@@ -44,7 +45,83 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
     password: hashedPassword,
   };
   const addedUser = await accountsDb.addUser(user);
-  res.send(addedUser);
+  const tokenPayload = underscore.pick(user, [
+    "id",
+    "email",
+    "firstName",
+    "lastName",
+    "age",
+  ]);
+  const token = await utils.generateAccessToken(
+    tokenPayload,
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN,
+    }
+  );
+
+  const refreshToken = await utils.generateAccessToken(
+    tokenPayload,
+    process.env.REFRESH_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN_REFRESH,
+    }
+  );
+  res.json({
+    access_token: token,
+    token_type: "Bearer",
+    expires_in: process.env.EXPIRES_IN,
+    refresh_token: refreshToken,
+    scope: "create",
+  });
+});
+
+router.post("/refresh-jwt", urlencodedParser, async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(401).json({ error: "Access denied,token missing!" });
+  }
+  const decodedData = await utils.decodeJwtToken(
+    refreshToken,
+    process.env.REFRESH_SECRET
+  );
+  if (!decodedData) {
+    return res.status(401).json({ error: "Access denied,token is not valid!" });
+  }
+  const userEmail = decodedData.email;
+  const user = await accountsDb.getUser(userEmail);
+
+  const newTokenPayload = underscore.pick(user, [
+    "id",
+    "email",
+    "firstName",
+    "lastName",
+    "age",
+  ]);
+
+  const newToken = await utils.generateAccessToken(
+    newTokenPayload,
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN,
+    }
+  );
+
+  const newRefreshToken = await utils.generateAccessToken(
+    newTokenPayload,
+    process.env.REFRESH_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN_REFRESH,
+    }
+  );
+
+  res.json({
+    access_token: newToken,
+    token_type: "Bearer",
+    expires_in: process.env.EXPIRES_IN,
+    refresh_token: newRefreshToken,
+    scope: "create",
+  });
 });
 
 router.post("/auth/signin", urlencodedParser, async (req, res) => {
