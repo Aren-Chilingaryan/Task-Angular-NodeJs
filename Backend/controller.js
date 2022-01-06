@@ -45,7 +45,7 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
     password: hashedPassword,
   };
   const addedUser = await accountsDb.addUser(user);
-  const newUserObject = underscore.pick(user, [
+  const tokenPayload = underscore.pick(user, [
     "id",
     "email",
     "firstName",
@@ -53,7 +53,7 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
     "age",
   ]);
   const token = await utils.generateAccessToken(
-    newUserObject,
+    tokenPayload,
     process.env.TOKEN_SECRET,
     {
       expiresIn: process.env.EXPIRES_IN,
@@ -61,7 +61,7 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
   );
 
   const refreshToken = await utils.generateAccessToken(
-    newUserObject,
+    tokenPayload,
     process.env.REFRESH_SECRET,
     {
       expiresIn: process.env.EXPIRES_IN_REFRESH,
@@ -79,7 +79,7 @@ router.post("/auth/signup", urlencodedParser, async (req, res) => {
 router.post("/refresh-jwt", urlencodedParser, async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
-    return res.status(403).json({ error: "Access denied,token missing!" });
+    return res.status(401).json({ error: "Access denied,token missing!" });
   }
   const decodedData = await utils.decodeJwtToken(
     refreshToken,
@@ -91,7 +91,7 @@ router.post("/refresh-jwt", urlencodedParser, async (req, res) => {
   const userEmail = decodedData.email;
   const user = await accountsDb.getUser(userEmail);
 
-  const userObject = underscore.pick(user, [
+  const newTokenPayload = underscore.pick(user, [
     "id",
     "email",
     "firstName",
@@ -100,10 +100,18 @@ router.post("/refresh-jwt", urlencodedParser, async (req, res) => {
   ]);
 
   const newToken = await utils.generateAccessToken(
-    userObject,
+    newTokenPayload,
     process.env.TOKEN_SECRET,
     {
       expiresIn: process.env.EXPIRES_IN,
+    }
+  );
+
+  const newRefreshToken = await utils.generateAccessToken(
+    newTokenPayload,
+    process.env.REFRESH_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN_REFRESH,
     }
   );
 
@@ -111,7 +119,7 @@ router.post("/refresh-jwt", urlencodedParser, async (req, res) => {
     access_token: newToken,
     token_type: "Bearer",
     expires_in: process.env.EXPIRES_IN,
-    refresh_token: refreshToken,
+    refresh_token: newRefreshToken,
     scope: "create",
   });
 });
