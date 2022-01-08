@@ -1,3 +1,4 @@
+<p-button label="Log Out" (click)="logOut()"></p-button>
 <p-table [value]="accounts" responsiveLayout="scroll">
   <ng-template pTemplate="header">
     <tr>
@@ -47,12 +48,7 @@
       name="date"
       #creationDate
     />
-    <input
-      type="text"
-      placeholder="Enter Owner Name"
-      name="owner"
-      #ownerName
-    />
+    <input type="text" placeholder="Enter Owner Name" name="owner" #ownerName />
   </div>
   <p-button
     label="Add"

@@ -61,6 +61,22 @@ function getUser(email) {
   });
 }
 
+function getThisUser(id) {
+  return new Promise((resolve, reject) => {
+    const query_str = `SELECT * FROM aren.users WHERE id='${id}';`;
+    connection.query(query_str, (err, result) => {
+      if (err) {
+        return reject(err);
+      }
+      if (result.length > 0) {
+        resolve(result[0]);
+      } else {
+        return resolve(null);
+      }
+    });
+  });
+}
+
 function addAccount(body) {
   return new Promise((resolve, reject) => {
     const query_str = `INSERT INTO aren.accounts (name, creationDate, owner) VALUES ("${body.name}", "${body.date}", "${body.owner}")`;
@@ -105,4 +121,5 @@ module.exports = {
   addAccount,
   deleteAccount,
   addUser,
+  getThisUser,
 };

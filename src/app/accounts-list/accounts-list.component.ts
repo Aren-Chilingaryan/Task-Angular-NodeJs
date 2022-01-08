@@ -51,7 +51,13 @@ export class AccountsListComponent implements OnInit {
   }
 
   async getAllAccounts() {
+    const user = JSON.parse(localStorage.getItem('authorizedUser') as string);
     this.accounts = await this.tableService.getAccounts();
+  }
+
+  logOut() {
+    localStorage.removeItem('authorizedUser');
+    this.router.navigateByUrl(`/signin`);
   }
 
   ngOnInit() {

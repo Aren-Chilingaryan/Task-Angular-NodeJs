@@ -17,10 +17,15 @@ export class SignInComponent implements OnInit {
   async signIn(credentials: Credential) {
     const authorizedUser = await this.tableService.signIn(credentials);
     if (authorizedUser) {
+      localStorage.setItem('authorizedUser', JSON.stringify(authorizedUser));
       this.router.navigateByUrl('/accounts');
     } else {
       this.isValid = false;
     }
+  }
+
+  goToSignup() {
+    this.router.navigateByUrl('/sign-up');
   }
   ngOnInit() {}
 }

@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
+const accountsDb = require("./accounts");
 
 async function hashPassword(password) {
   const salt = await bcrypt.genSalt(10);
@@ -16,8 +17,15 @@ async function decodeJwtToken(token, secret) {
   return jwt.verify(token, secret);
 }
 
+async function getCurrentUser(req) {
+  const token = req.headers["authorization"].split(" ")[1];
+  const user = await decodeJwtToken(token, process.env.TOKEN_SECRET);
+  return accountsDb.getThisUser(user.id);
+}
+
 module.exports = {
   hashPassword,
   generateAccessToken,
   decodeJwtToken,
+  getCurrentUser,
 };

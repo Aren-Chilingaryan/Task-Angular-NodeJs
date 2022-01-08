@@ -15,6 +15,10 @@ const underscore = require("underscore");
 
 router.get("/accounts", async (req, res) => {
   const accounts = await accountsDb.getAllAccounts();
+  const curretntUser = await utils.getCurrentUser(req);
+  if (!curretntUser) {
+    return res.status(401).json({ error: "Access denied! Unauthorized" });
+  }
   res.send(accounts);
 });
 
@@ -124,6 +128,12 @@ router.post("/refresh-jwt", urlencodedParser, async (req, res) => {
   });
 });
 
+router.post("/currentuser", urlencodedParser, async (req, res) => {
+  const { email } = req.body;
+  const user = await accountsDb.getUser(email);
+  res.status(200).json(user);
+});
+
 router.post("/auth/signin", urlencodedParser, async (req, res) => {
   const { email, password } = req.body;
   const user = await accountsDb.getUser(email);
@@ -131,12 +141,41 @@ router.post("/auth/signin", urlencodedParser, async (req, res) => {
     res.status(401).json({ error: "User does not exist" });
     return;
   }
+  const tokenPayload = underscore.pick(user, [
+    "id",
+    "email",
+    "firstName",
+    "lastName",
+    "age",
+  ]);
+  const token = await utils.generateAccessToken(
+    tokenPayload,
+    process.env.TOKEN_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN,
+    }
+  );
+
+  const refreshToken = await utils.generateAccessToken(
+    tokenPayload,
+    process.env.REFRESH_SECRET,
+    {
+      expiresIn: process.env.EXPIRES_IN_REFRESH,
+    }
+  );
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     res.status(401).json({ error: "Password is invalid" });
     return;
   }
-  res.status(200).json(user);
+  res.json({
+    access_token: token,
+    token_type: "Bearer",
+    expires_in: process.env.EXPIRES_IN,
+    refresh_token: refreshToken,
+    scope: "create",
+  });
 });
 
 router.delete("/accounts/delete/:id", urlencodedParser, async (req, res) => {
