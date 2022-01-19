@@ -31,6 +31,7 @@ export class AccountsListComponent implements OnInit {
     creationDate: Date | string,
     ownerName: string
   ) {
+    const user = JSON.parse(localStorage.getItem('authorizedUser') as string);
     const newAccounts = [...this.accounts];
     const account = {
       name: name,
@@ -39,7 +40,7 @@ export class AccountsListComponent implements OnInit {
     };
     this.showModal = false;
     const newAccount = await this.tableService.addAccount(account);
-    newAccounts.push(newAccount);
+    newAccounts.push(newAccount as Account);
     this.accounts = newAccounts;
   }
 
@@ -51,8 +52,7 @@ export class AccountsListComponent implements OnInit {
   }
 
   async getAllAccounts() {
-    const user = JSON.parse(localStorage.getItem('authorizedUser') as string);
-    this.accounts = await this.tableService.getAccounts();
+    this.accounts = await this.tableService.getAccounts();    
   }
 
   logOut() {

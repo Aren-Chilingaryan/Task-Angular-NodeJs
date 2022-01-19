@@ -61,7 +61,7 @@ function getUser(email) {
   });
 }
 
-function getThisUser(id) {
+function getUserById(id) {
   return new Promise((resolve, reject) => {
     const query_str = `SELECT * FROM aren.users WHERE id='${id}';`;
     connection.query(query_str, (err, result) => {
@@ -121,5 +121,5 @@ module.exports = {
   addAccount,
   deleteAccount,
   addUser,
-  getThisUser,
+  getUserById,
 };

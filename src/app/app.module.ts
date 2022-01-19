@@ -13,7 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogModule } from 'primeng/dialog';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APIInterceptor } from './interceptor';
+import { APIInterceptor } from './interceptor/api-interceptor';
 
 @NgModule({
   declarations: [
