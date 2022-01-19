@@ -12,6 +12,8 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogModule } from 'primeng/dialog';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APIInterceptor } from './interceptor/api-interceptor';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     DialogModule,
     BrowserAnimationsModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Account, User, Credential } from './interfaces';
 import * as moment from 'moment';
 import { environment } from './../environments/environment';
@@ -7,6 +7,7 @@ import { environment } from './../environments/environment';
 const signupUrl = '/auth/signup';
 const signinUrl = '/auth/signin';
 const accountsUrl = '/accounts';
+const refresh = '/refresh-jwt';
 @Injectable({ providedIn: 'root' })
 export class TableService {
   private apiurl: string = environment.apiUrl;
@@ -18,7 +19,7 @@ export class TableService {
   }
 
   async getAccount(id: string): Promise<Account> {
-    const url = accountsUrl + id;
+    const url = this.apiurl + accountsUrl + '/' + id;
     const data = await this.http.get<Account>(url).toPromise();
     data.creationDate = this.formatDate(data.creationDate);
     return data;
@@ -55,6 +56,14 @@ export class TableService {
   async signIn(credentials: Credential) {
     const url = this.apiurl + signinUrl;
     const data = await this.http.post<User>(url, credentials).toPromise();
+    return data;
+  }
+
+  async refreshJwt(refreshToken: any) {
+    const url = this.apiurl + refresh;
+    const data = await this.http
+      .post(url, { refreshtoken: refreshToken })
+      .toPromise();
     return data;
   }
 }

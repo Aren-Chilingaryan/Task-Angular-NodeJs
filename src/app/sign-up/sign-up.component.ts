@@ -15,7 +15,10 @@ export class SignUpComponent implements OnInit {
 
   async register(user: User) {
     const newUser = await this.tableService.addUser(user);
-    this.router.navigateByUrl(`/signin`);
+    if (newUser) {
+      localStorage.setItem('authorizedUser', JSON.stringify(newUser));
+    }
+    this.router.navigateByUrl(`/accounts`);
   }
 
   ngOnInit() {}
