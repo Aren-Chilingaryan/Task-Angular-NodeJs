@@ -53,6 +53,9 @@ export class APIInterceptor implements HttpInterceptor {
                 );
               }
               const newuser = localStorage.getItem('authorizedUser');
+              if(!newuser){
+                return throwError("User is not valid");
+              }
               const newUser = JSON.parse(newuser as string);
               const authReq = req.clone({
                 headers: req.headers
