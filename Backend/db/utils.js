@@ -18,10 +18,11 @@ async function decodeJwtToken(token, secret) {
 }
 
 async function getCurrentUser(req) {
-  const token = req.headers["authorization"].split(" ")[1];
-  if (!token) {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) {
     return null;
   }
+  const token = authHeader.split(" ")[1];
   const user = await decodeJwtToken(token, process.env.TOKEN_SECRET);
   return accountsDb.getUser(user.email);
 }

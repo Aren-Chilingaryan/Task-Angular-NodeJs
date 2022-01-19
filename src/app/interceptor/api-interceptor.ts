@@ -15,7 +15,6 @@ import { TableService } from '../table-service';
 export class APIInterceptor implements HttpInterceptor {
   constructor(private tableService: TableService, private http: HttpClient) {}
   refreshTokenObservable: Observable<any> = new Observable();
-  refreshedUser: any;
 
   intercept(
     req: HttpRequest<any>,
@@ -44,14 +43,13 @@ export class APIInterceptor implements HttpInterceptor {
           );
           return newGeneratedToken.pipe(
             switchMap((token) => {
-              this.refreshedUser = token;
 
               localStorage.removeItem('authorizedUser');
 
-              if (this.refreshedUser) {
+              if (token) {
                 localStorage.setItem(
                   'authorizedUser',
-                  JSON.stringify(this.refreshedUser)
+                  JSON.stringify(token)
                 );
               }
               const newuser = localStorage.getItem('authorizedUser');

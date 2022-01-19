@@ -12,27 +12,15 @@ const accountsDb = db.accounts;
 const router = express.Router();
 const utils = require("./db/utils.js");
 const underscore = require("underscore");
+const auth = require("./middleware/auth.js");
 
-router.get("/accounts", async (req, res) => {
-  try {
-    const accounts = await accountsDb.getAllAccounts();
-    const currentUser = await utils.getCurrentUser(req);
-    if (!currentUser) {
-      return res.status(401).json({ error: "Access denied! Unauthorized" });
-    }
-    res.send(accounts);
-  } catch (err) {
-    return res.status(401).json({ error: "Access denied! " });
-  }
+router.get("/accounts", auth, async (req, res) => {
+  const accounts = await accountsDb.getAllAccounts();
+  res.json(accounts);
 });
 
-router.get("/accounts/:id", async (req, res) => {
+router.get("/accounts/:id", auth, async (req, res) => {
   try {
-    const user = await utils.getCurrentUser(req);
-    if (!user) {
-      res.status(401).json({ error: "Token is invalid" });
-      return;
-    }
     const account = await accountsDb.getAccount(req.params.id);
     res.json(account);
   } catch (err) {
@@ -41,23 +29,14 @@ router.get("/accounts/:id", async (req, res) => {
 });
 
 router.post("/accounts", urlencodedParser, async (req, res) => {
-  try {
-    const user = await utils.getCurrentUser(req);
-    if (!user) {
-      res.status(401).json({ error: "Token is invalid" });
-      return;
-    }
-    const { name, creationDate, owner } = req.body;
-    const account = {
-      name: name,
-      date: creationDate,
-      owner: owner,
-    };
-    const addedAccount = await accountsDb.addAccount(account);
-    res.json(addedAccount);
-  } catch (err) {
-    res.status(401).json({ error: "Token is invalid" });
-  }
+  const { name, creationDate, owner } = req.body;
+  const account = {
+    name: name,
+    date: creationDate,
+    owner: owner,
+  };
+  const addedAccount = await accountsDb.addAccount(account);
+  res.json(addedAccount);
 });
 
 router.post("/auth/signup", urlencodedParser, async (req, res) => {
@@ -217,20 +196,16 @@ router.post("/auth/signin", urlencodedParser, async (req, res) => {
   }
 });
 
-router.delete("/accounts/delete/:id", urlencodedParser, async (req, res) => {
-  try {
-    const user = await utils.getCurrentUser(req);
-    if (!user) {
-      res.status(401).json({ error: "Token is invalid" });
-      return;
-    }
+router.delete(
+  "/accounts/delete/:id",
+  urlencodedParser,
+  auth,
+  async (req, res) => {
     const id = req.params.id;
     const deltedAccount = await accountsDb.deleteAccount(id);
     res.send(deltedAccount);
-  } catch (err) {
-    res.status(401).json({ error: "Token is invalid" });
   }
-});
+);
 
 app.use("/api", router);
 const port = process.env.PORT || 3000;
